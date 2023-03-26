@@ -659,19 +659,21 @@ public class Scalr {
 
 		boolean hasReassignedSrc = false;
 
-		for (int i = 0; i < ops.length; i++) {
-      long subT = -1;
-      if (DEBUG)
-        subT = System.currentTimeMillis();
-			BufferedImageOp op = ops[i];
+		for (BufferedImageOp bufferedImageOp : ops) {
+			long subT = -1;
+			if (DEBUG) {
+				subT = System.currentTimeMillis();
+			}
+			BufferedImageOp op = bufferedImageOp;
 
 			// Skip null ops instead of throwing an exception.
 			if (op == null)
 				continue;
 
-			if (DEBUG)
+			if (DEBUG) {
 				log(1, "Applying BufferedImageOp [class=%s, toString=%s]...",
 						op.getClass(), op.toString());
+			}
 
 			/*
 			 * Must use op.getBounds instead of src.getWidth and src.getHeight
@@ -683,12 +685,12 @@ public class Scalr {
 			Rectangle2D resultBounds = op.getBounds2D(src);
 
 			// Watch out for flaky/misbehaving ops that fail to work right.
-			if (resultBounds == null)
+			if (resultBounds == null) {
 				throw new ImagingOpException(
 						"BufferedImageOp ["
 								+ op.toString()
 								+ "] getBounds2D(src) returned null bounds for the target image; this should not happen and indicates a problem with application of this type of op.");
-
+			}
 			/*
 			 * We must manually create the target image; we cannot rely on the
 			 * null-destination filter() method to create a valid destination
@@ -726,11 +728,12 @@ public class Scalr {
 			 */
 			hasReassignedSrc = true;
 
-			if (DEBUG)
+			if (DEBUG) {
 				log(1,
 						"Applied BufferedImageOp in %d ms, result [width=%d, height=%d]",
 						System.currentTimeMillis() - subT, result.getWidth(),
 						result.getHeight());
+			}
 		}
 
 		if (DEBUG)
@@ -840,9 +843,10 @@ public class Scalr {
 	public static BufferedImage crop(BufferedImage src, int x, int y,
 			int width, int height, BufferedImageOp... ops)
 			throws IllegalArgumentException, ImagingOpException {
-    long t = -1;
-    if (DEBUG)
-      t = System.currentTimeMillis();
+		long t = -1;
+		if (DEBUG) {
+			t = System.currentTimeMillis();
+		}
 
 		if (src == null)
 			throw new IllegalArgumentException("src cannot be null");
@@ -864,10 +868,11 @@ public class Scalr {
 							+ "] must be <= src.getHeight() [" + srcHeight
 							+ "]");
 
-		if (DEBUG)
+		if (DEBUG) {
 			log(0,
 					"Cropping Image [width=%d, height=%d] to [x=%d, y=%d, width=%d, height=%d]...",
 					srcWidth, srcHeight, x, y, width, height);
+		}
 
 		// Create a target image of an optimal type to render into.
 		BufferedImage result = createOptimalImage(src, width, height);
@@ -1948,8 +1953,9 @@ public class Scalr {
 		if (Scalr.DEBUG) {
 			System.out.print(Scalr.LOG_PREFIX);
 
-			for (int i = 0; i < depth; i++)
+			for (int i = 0; i < depth; i++) {
 				System.out.print("\t");
+			}
 
 			System.out.printf(message, params);
 			System.out.println();
