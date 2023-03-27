@@ -1006,8 +1006,9 @@ public class Scalr {
 			Color color, BufferedImageOp... ops)
 			throws IllegalArgumentException, ImagingOpException {
     long t = -1;
-    if (DEBUG)
-      t = System.currentTimeMillis();
+    if (DEBUG) {
+		t = System.currentTimeMillis();
+	}
 
 		if (src == null)
 			throw new IllegalArgumentException("src cannot be null");
@@ -1074,8 +1075,9 @@ public class Scalr {
 		g.drawImage(src, padding, padding, null);
 		g.dispose();
 
-		if (DEBUG)
+		if (DEBUG) {
 			log(0, "Padding Applied in %d ms", System.currentTimeMillis() - t);
+		}
 
 		// Apply any optional operations (if specified).
 		if (ops != null && ops.length > 0)
