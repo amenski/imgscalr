@@ -80,7 +80,7 @@ public class WaterMark {
     }
 
     /**
-     * water mark positions
+     * water-mark positions
      *
      */
     public interface IPosition {
@@ -98,14 +98,14 @@ public class WaterMark {
         TOP_CENTER {
             @Override
             public void calculate(int imageWidth, int imageHeight, int waterMarkWidth, int waterMarkHeight) {
-                x = 0;
+                x = (imageWidth - waterMarkWidth) / 2;
                 y = 0;
             }
         },
         TOP_RIGHT {
             @Override
             public void calculate(int imageWidth, int imageHeight, int waterMarkWidth, int waterMarkHeight) {
-                x = 0;
+                x = imageWidth - waterMarkWidth;
                 y = 0;
             }
         },
@@ -113,42 +113,42 @@ public class WaterMark {
             @Override
             public void calculate(int imageWidth, int imageHeight, int waterMarkWidth, int waterMarkHeight) {
                 x = 0;
-                y = 0;
+                y = (imageHeight - waterMarkHeight) / 2;
             }
         },
         CENTER {
             @Override
             public void calculate(int imageWidth, int imageHeight, int waterMarkWidth, int waterMarkHeight) {
-                x = 0;
-                y = 0;
+                x = (imageWidth - waterMarkWidth) / 2;
+                y = (imageHeight - waterMarkHeight) / 2;
             }
         },
         MIDDLE_RIGHT {
             @Override
             public void calculate(int imageWidth, int imageHeight, int waterMarkWidth, int waterMarkHeight) {
-                x = 0;
-                y = 0;
+                x = imageWidth - waterMarkWidth;
+                y = (imageHeight - waterMarkHeight) / 2;
             }
         },
         BOTTOM_LEFT {
             @Override
             public void calculate(int imageWidth, int imageHeight, int waterMarkWidth, int waterMarkHeight) {
                 x = 0;
-                y = 0;
+                y = imageHeight - waterMarkHeight;
             }
         },
         BOTTOM_CENTER {
             @Override
             public void calculate(int imageWidth, int imageHeight, int waterMarkWidth, int waterMarkHeight) {
-                x = 0;
-                y = 0;
+                x = (imageWidth - waterMarkWidth) / 2;
+                y = imageHeight - waterMarkWidth;
             }
         },
         BOTTOM_RIGHT {
             @Override
             public void calculate(int imageWidth, int imageHeight, int waterMarkWidth, int waterMarkHeight) {
-                x = 0;
-                y = 0;
+                x = imageWidth - waterMarkWidth;
+                y = imageHeight - waterMarkHeight;
             }
         };
 
