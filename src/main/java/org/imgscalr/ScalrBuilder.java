@@ -2,6 +2,7 @@ package org.imgscalr;
 
 import org.imgscalr.Scalr.Mode;
 import org.imgscalr.WaterMark.Position;
+import org.imgscalr.WaterMark.TextWatermarkOptions;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -43,13 +44,20 @@ public class ScalrBuilder {
     }
 
     public ScalrBuilder resize() {
-        Scalr.resize(bfi, Mode.AUTOMATIC, width, height);
+        bfi = Scalr.resize(bfi, Mode.AUTOMATIC, width, height);
         return this;
     }
 
     public ScalrBuilder addTextWaterMark(final String text, Position position, float opacity) {
+        if(text == null || text.isEmpty()) {
+            throw new IllegalArgumentException("Text can not be null");
+        }
+        TextWatermarkOptions watermarkOptions = new TextWatermarkOptions(
+                text,
+                "Arial", 25, Font.ITALIC,
+                Color.RED);
         WaterMark waterMark = new WaterMark(position, bfi, opacity);
-        waterMark.addTextWatermark(text, Color.RED);
+        waterMark.addTextWatermark(text, watermarkOptions);
         return this;
     }
 

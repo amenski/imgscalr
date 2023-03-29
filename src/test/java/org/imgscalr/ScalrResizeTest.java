@@ -16,11 +16,13 @@
 package org.imgscalr;
 
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 import junit.framework.Assert;
 
 import org.imgscalr.Scalr.Method;
 import org.imgscalr.Scalr.Mode;
+import org.imgscalr.WaterMark.Position;
 import org.junit.Test;
 
 public class ScalrResizeTest extends AbstractScalrTest {
@@ -211,4 +213,17 @@ public class ScalrResizeTest extends AbstractScalrTest {
         Assert.assertEquals(fitBothWidth, fitBoth.getWidth());
         Assert.assertEquals(fitBothHeight, fitBoth.getHeight());
     }
+
+	@Test
+	public void testWaterMark() throws Exception {
+		System.setProperty(Scalr.DEBUG_PROPERTY_NAME, "true");
+		ScalrBuilder builder  = new ScalrBuilder().of("mr-t.jpg")
+				.size(200,200)
+				.addTextWaterMark("some text here", Position.TOP_CENTER, 0.5f)
+				.addTextWaterMark("some text here", Position.CENTER, 0.5f)
+				.addTextWaterMark("some text here", Position.BOTTOM_CENTER, 0.8f)
+				.resize();
+		builder.toFile("mr-t-text-water-marked.png");
+		Assert.assertTrue(true);
+	}
 }
