@@ -8,6 +8,7 @@ import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -58,6 +59,12 @@ public class ScalrBuilder {
                 Color.RED);
         WaterMark waterMark = new WaterMark(position, bfi, opacity);
         waterMark.addTextWatermark(text, watermarkOptions);
+        return this;
+    }
+
+    public ScalrBuilder addImageWatermark(File watermarkImageFile, Position position, float opacity) throws IOException {
+        WaterMark waterMark = new WaterMark(position, bfi, opacity);
+        waterMark.addImageWatermark(watermarkImageFile);
         return this;
     }
 
