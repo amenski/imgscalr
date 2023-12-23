@@ -1,8 +1,9 @@
 package org.imgscalr;
 
 import org.imgscalr.Scalr.Mode;
-import org.imgscalr.WaterMark.Position;
-import org.imgscalr.WaterMark.TextWatermarkOptions;
+import org.imgscalr.watermark.TextWatermarkOptions;
+import org.imgscalr.watermark.WaterMark;
+import org.imgscalr.watermark.WaterMark.Position;
 
 import javax.imageio.ImageIO;
 import java.awt.*;
@@ -55,20 +56,29 @@ public class ScalrBuilder {
         }
         TextWatermarkOptions watermarkOptions = new TextWatermarkOptions(
                 text,
-                "Arial", 25, Font.ITALIC,
+                "Arial", 20, Font.CENTER_BASELINE,
                 Color.RED);
-        WaterMark waterMark = new WaterMark(position, bfi, opacity);
-        waterMark.addTextWatermark(text, watermarkOptions);
+        WaterMark waterMark = new WaterMark(bfi, position, opacity);
+        waterMark.addTextWatermark(watermarkOptions);
         return this;
     }
 
-    public ScalrBuilder addImageWatermark(File watermarkImageFile, Position position, float opacity) throws IOException {
-        WaterMark waterMark = new WaterMark(position, bfi, opacity);
-        waterMark.addImageWatermark(watermarkImageFile);
+    public ScalrBuilder addTextWaterMark(final String text, TextWatermarkOptions option) {
+        if(text == null || text.isEmpty()) {
+            throw new IllegalArgumentException("Text can not be null");
+        }
+        WaterMark waterMark = new WaterMark(bfi);
+        waterMark.addTextWatermark(option);
         return this;
     }
 
-    public void toFile(final String fileName) throws Exception {
+    public ScalrBuilder addImageWatermark(File watermark, Position position, float opacity) throws IOException {
+        WaterMark wm = new WaterMark(bfi, position, opacity);
+        wm.addImageWatermark(watermark);
+        return this;
+    }
+
+    public void toFile(final String fileName) {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();) {
             if (fileName == null || fileName.isEmpty()) {
                 throw new IllegalArgumentException("File name can not be empty");
@@ -81,7 +91,7 @@ public class ScalrBuilder {
             outputStream.flush();
             Files.write(Paths.get(fileName), outputStream.toByteArray());
         } catch (Exception e) {
-            throw e;
+            throw new RuntimeException("Error exporting to file.");
         }
     }
 

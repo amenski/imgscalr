@@ -16,13 +16,13 @@
 package org.imgscalr;
 
 import java.awt.image.BufferedImage;
-import java.io.IOException;
+import java.nio.file.Paths;
 
 import junit.framework.Assert;
 
 import org.imgscalr.Scalr.Method;
 import org.imgscalr.Scalr.Mode;
-import org.imgscalr.WaterMark.Position;
+import org.imgscalr.watermark.WaterMark.Position;
 import org.junit.Test;
 
 public class ScalrResizeTest extends AbstractScalrTest {
@@ -214,11 +214,12 @@ public class ScalrResizeTest extends AbstractScalrTest {
         Assert.assertEquals(fitBothHeight, fitBoth.getHeight());
     }
 
-//	@Test
-//	public void testWaterMarkWitText() throws Exception {
-//		System.setProperty(Scalr.DEBUG_PROPERTY_NAME, "true");
-//		ScalrBuilder builder  = new ScalrBuilder().of("src/test/resources/org/imgscalr/mr-t.jpg")
-//				.size(200,200)
+	@Test
+	public void testWaterMarkWitText() throws Exception {
+		System.setProperty(Scalr.DEBUG_PROPERTY_NAME, "true");
+		ScalrBuilder builder  = new ScalrBuilder().of("src/test/resources/org/imgscalr/mr-t.jpg")
+				.size(400,200)
+				.addImageWatermark(Paths.get("src/test/resources/org/imgscalr/watermark.jpg").toFile(), Position.CENTER, 0.5f)
 //				.addTextWaterMark("TOP_CENTER", Position.TOP_CENTER, 0.9f)
 //				.addTextWaterMark("TOP_LEFT", Position.TOP_LEFT, 0.9f)
 //				.addTextWaterMark("TOP_RIGHT", Position.TOP_RIGHT, 0.9f)
@@ -228,13 +229,37 @@ public class ScalrResizeTest extends AbstractScalrTest {
 //				.addTextWaterMark("BOTTOM_LEFT", Position.BOTTOM_LEFT, 0.9f)
 //				.addTextWaterMark("BOTTOM_CENTER", Position.BOTTOM_CENTER, 0.9f)
 //				.addTextWaterMark("BOTTOM_RIGHT", Position.BOTTOM_RIGHT, 0.9f)
-//				.resize();
-////		builder.toFile("src/test/resources/org/imgscalr/mr-t-text-water-marked.png");
-//
+				.resize();
+		builder.toFile("src/test/resources/org/imgscalr/mr-t-text-water-marked.png");
+
 //		Position p = Position.CENTER;
 //		p.calculate(200, 200, 100, 100);
-//
+
 //		BufferedImage result = builder.toBufferedImage();
 //		Assert.assertEquals (result.getWidth(), p.getX());
-//	}
+	}
+
+
+	@Test
+	public void testWaterMarkWitText1() throws Exception {
+		System.setProperty(Scalr.DEBUG_PROPERTY_NAME, "true");
+		ScalrBuilder builder  = new ScalrBuilder().of("src/test/resources/org/imgscalr/mr-t.jpg")
+				.size(200,200)
+				.addTextWaterMark("TOP_CENTER", Position.TOP_CENTER, 0.9f)
+				.addTextWaterMark("TOP_LEFT", Position.TOP_LEFT, 0.9f)
+				.addTextWaterMark("TOP_RIGHT", Position.TOP_RIGHT, 0.9f)
+				.addTextWaterMark("CENTER_LEFT", Position.CENTER_LEFT, 0.9f)
+				.addTextWaterMark("CENTER", Position.CENTER, 0.9f)
+				.addTextWaterMark("CENTER_RIGHT", Position.CENTER_RIGHT, 0.9f)
+				.addTextWaterMark("BOTTOM_LEFT", Position.BOTTOM_LEFT, 0.9f)
+				.addTextWaterMark("BOTTOM_CENTER", Position.BOTTOM_CENTER, 0.9f)
+				.addTextWaterMark("BOTTOM_RIGHT", Position.BOTTOM_RIGHT, 0.9f)
+				.resize();
+//		builder.toFile("src/test/resources/org/imgscalr/mr-t-text-water-marked.png");
+
+		Position p = Position.CENTER;
+		p.calculate(200, 200, 100, 100);
+
+		BufferedImage result = builder.toBufferedImage();
+	}
 }
