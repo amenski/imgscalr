@@ -13,7 +13,7 @@ import static org.imgscalr.Scalr.log;
 public class WaterMark {
 
     private final Position position;
-    private BufferedImage bfi;
+    private final BufferedImage bfi;
     private final float opacity;
 
     public WaterMark(Position position, BufferedImage bfi, float opacity) {
@@ -44,7 +44,7 @@ public class WaterMark {
                 (int) rect.getHeight()
         );
 
-        g2d.drawString(text, position.x, position.y);
+        g2d.drawString(text, position.getX(), position.getY());
         g2d.dispose();
     }
 
@@ -70,7 +70,7 @@ public class WaterMark {
             );
 
             // paints the image watermark
-            g2d.drawImage(watermarkImage, position.x, position.y, null);
+            g2d.drawImage(watermarkImage, position.getX(), position.getY(), null);
             g2d.dispose();
             return bfi;
         } catch (IOException ex) {
@@ -79,88 +79,92 @@ public class WaterMark {
         }
     }
 
-    /**
-     * water-mark positions
-     *
-     */
-    public interface IPosition {
-        void calculate(int imageWidth, int imageHeight, int waterMarkWidth, int waterMarkHeight);
-    }
-
-    // http://www.cs.utsa.edu/~cs3443/notes/chapter13/ch13.html
-    public enum Position implements IPosition {
+    public enum Position {
         TOP_LEFT {
             @Override
             public void calculate(int imageWidth, int imageHeight, int waterMarkWidth, int waterMarkHeight) {
-                x = 0;
-                y = imageHeight - (imageHeight - waterMarkHeight);
+                result = Pair.of(0 ,0);
             }
         },
         TOP_CENTER {
             @Override
             public void calculate(int imageWidth, int imageHeight, int waterMarkWidth, int waterMarkHeight) {
-                x = (imageWidth - waterMarkWidth) / 2;
-                y = imageHeight - (imageHeight - waterMarkHeight);
+                result = Pair.of(
+                        (imageWidth - waterMarkWidth) / 2,
+                        imageHeight - (imageHeight - waterMarkHeight)
+                );
             }
         },
         TOP_RIGHT {
             @Override
             public void calculate(int imageWidth, int imageHeight, int waterMarkWidth, int waterMarkHeight) {
-                x = imageWidth - waterMarkWidth;
-                y = imageHeight - (imageHeight - waterMarkHeight);
+                result = Pair.of(
+                        imageWidth - waterMarkWidth,
+                        0
+                );
             }
         },
-        MIDDLE_LEFT {
+        CENTER_LEFT {
             @Override
             public void calculate(int imageWidth, int imageHeight, int waterMarkWidth, int waterMarkHeight) {
-                x = 0;
-                y = adjustY(imageHeight, waterMarkHeight) / 2;
+                result = Pair.of(
+                        0,
+                        (imageHeight - waterMarkHeight) / 2
+                );
             }
         },
         CENTER {
             @Override
             public void calculate(int imageWidth, int imageHeight, int waterMarkWidth, int waterMarkHeight) {
-                x = (imageWidth - waterMarkWidth) / 2;
-                y = adjustY(imageHeight, waterMarkHeight) / 2;
+                result = Pair.of(
+                        (imageWidth - waterMarkWidth) / 2,
+                        (imageHeight - waterMarkHeight) / 2
+                );
             }
         },
-        MIDDLE_RIGHT {
+        CENTER_RIGHT {
             @Override
             public void calculate(int imageWidth, int imageHeight, int waterMarkWidth, int waterMarkHeight) {
-                x = imageWidth - waterMarkWidth;
-                y = imageHeight / 2;
+                result = Pair.of(
+                        imageWidth - waterMarkWidth,
+                        imageHeight / 2
+                );
             }
         },
         BOTTOM_LEFT {
             @Override
             public void calculate(int imageWidth, int imageHeight, int waterMarkWidth, int waterMarkHeight) {
-                x = 0;
-                y = adjustY(imageHeight, waterMarkHeight);
+                result = Pair.of(
+                        0,
+                        imageHeight - waterMarkHeight
+                );
             }
         },
         BOTTOM_CENTER {
             @Override
             public void calculate(int imageWidth, int imageHeight, int waterMarkWidth, int waterMarkHeight) {
-                x = (imageWidth - waterMarkWidth) / 2;
-                y = adjustY(imageHeight, waterMarkHeight);
+                result = Pair.of(
+                        (imageWidth - waterMarkWidth) / 2,
+                        imageHeight - waterMarkHeight
+                );
             }
         },
         BOTTOM_RIGHT {
             @Override
             public void calculate(int imageWidth, int imageHeight, int waterMarkWidth, int waterMarkHeight) {
-                x = imageWidth - waterMarkWidth;
-                y = adjustY(imageHeight, waterMarkHeight);
+                result = Pair.of(
+                        imageWidth - waterMarkWidth,
+                        imageHeight - waterMarkHeight
+                );
             }
         };
 
-        int x;
-        int y;
+        protected Pair<Integer, Integer> result;
 
-        int adjustY(int imageHeight, int waterMarkHeight) {
-            double yRatio = (imageHeight - waterMarkHeight) / (double) imageHeight;
-            int yOffset = (int)((1.0 - yRatio) * imageHeight);
-            return (imageHeight - waterMarkHeight) + yOffset;
-        }
+        int getX() {return result.getLeft();}
+        int getY() {return result.getRight();}
+        public abstract void calculate(int imageWidth, int imageHeight, int waterMarkWidth, int waterMarkHeight);
+
     }
 
 
