@@ -1,6 +1,7 @@
 package org.imgscalr;
 
 import org.imgscalr.Scalr.Mode;
+import org.imgscalr.watermark.ImageWatermarkOptions;
 import org.imgscalr.watermark.TextWatermarkOptions;
 import org.imgscalr.watermark.WaterMark;
 import org.imgscalr.watermark.WaterMark.Position;
@@ -41,7 +42,7 @@ public class ScalrBuilder {
     }
 
     public ScalrBuilder resize(Mode mode) {
-        resize(mode);
+        bfi = Scalr.resize(bfi, mode, width, height);
         return this;
     }
 
@@ -72,9 +73,27 @@ public class ScalrBuilder {
         return this;
     }
 
-    public ScalrBuilder addImageWatermark(File watermark, Position position, float opacity) throws IOException {
+    public ScalrBuilder addImageWatermark(File watermark) {
+        WaterMark wm = new WaterMark(bfi);
+        wm.addImageWatermark(watermark);
+        return this;
+    }
+
+    public ScalrBuilder addImageWatermark(File watermark, Position position, float opacity) {
         WaterMark wm = new WaterMark(bfi, position, opacity);
         wm.addImageWatermark(watermark);
+        return this;
+    }
+
+    public ScalrBuilder addImageWatermark(ImageWatermarkOptions options) {
+        WaterMark wm = new WaterMark(bfi);
+        wm.addImageWatermark(options);
+        return this;
+    }
+
+    public ScalrBuilder addImageWatermark(ImageWatermarkOptions option, Position position, float opacity) {
+        WaterMark wm = new WaterMark(bfi, position, opacity);
+        wm.addImageWatermark(option);
         return this;
     }
 

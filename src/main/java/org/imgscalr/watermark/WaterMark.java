@@ -1,5 +1,7 @@
 package org.imgscalr.watermark;
 
+import org.imgscalr.Scalr;
+import org.imgscalr.util.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,13 +12,11 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 
 public class WaterMark {
-
     private static final Logger logger = LoggerFactory.getLogger(WaterMark.class);
 
     private final Position position;
     private final BufferedImage bfi;
     private final float opacity;
-//    private final int ratio;
 
     public WaterMark(BufferedImage bfi) {
         this(bfi, Position.CENTER, 1.0f);
@@ -34,7 +34,7 @@ public class WaterMark {
     public void addTextWatermark(TextWatermarkOptions option) {
         Graphics2D g2d = (Graphics2D) bfi.getGraphics();
 
-        AlphaComposite alphaChannel = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, opacity);
+        AlphaComposite alphaChannel = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, this.opacity);
         g2d.setComposite(alphaChannel);
         g2d.setFont(option.getFont());
         g2d.setColor(option.getColor());
@@ -62,11 +62,30 @@ public class WaterMark {
             if(file == null) {
                 throw new RuntimeException("Watermark file can't be empty");
             }
-            BufferedImage watermarkImage = ImageIO.read(file);
+            return addImageWatermark(new ImageWatermarkOptions(file));
+        } catch (Exception ex) {
+            logger.error("Error adding water mark", ex);
+            throw new RuntimeException(ex);
+        }
+    }
+
+    public BufferedImage addImageWatermark(ImageWatermarkOptions options) {
+        try {
+            if(options == null) {
+                throw new RuntimeException("Wrong ImageWatermarkOptions value.");
+            }
+
+            BufferedImage watermarkImage = options.getBufferedImage();
+            if (watermarkImage == null) {
+                watermarkImage = ImageIO.read(options.getFile());
+            }
+
+            // TODO: do we care if watermarkImage image is bigger than base image?
+            watermarkImage = Scalr.resize(watermarkImage, Scalr.Mode.AUTOMATIC, options.getWidth(), options.getHeight());
 
             // initializes necessary graphic properties
             Graphics2D g2d = (Graphics2D) bfi.getGraphics();
-            AlphaComposite alphaChannel = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 0.3f);
+            AlphaComposite alphaChannel = AlphaComposite.getInstance(AlphaComposite.SRC_OVER, this.opacity);
             g2d.setComposite(alphaChannel);
 
             Pair<Integer, Integer> pos = position.calculate(
@@ -76,7 +95,6 @@ public class WaterMark {
                     watermarkImage.getHeight()
             );
 
-            // paints the image watermark
             g2d.drawImage(watermarkImage, pos.getLeft(), pos.getRight(), null);
             g2d.dispose();
             return bfi;
